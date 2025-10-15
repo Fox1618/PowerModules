@@ -1,25 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hardware.DeviceSending;
+using Telemetria.Hardware.PowerModules.Common;
 
 namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
 {
-    public class SPackTonheBase : SPackBase
+    public class SPackTonheBase : SPackPModulesBase, IPackTonheBase
     {
-        public byte Priority { get; set; }
-        public bool Reservation { get; set; }
+        public SPackTonheBase()
+        {
+            Dp = false;
+            Reserve = false;
+            Priority = 6;
+        }
         public bool Dp { get; set; }
-        public byte CodeCmd { get; set; }
-        public byte TargetAddress { get; set; }
-        public byte SourceAddress { get; set; }
-        List<byte> Data { get; set; }
+        public byte Priority { get; set; }
+        public bool Reserve { get; set; }
 
         public override byte[] ToByte()
         {
-            throw new NotImplementedException();
+            var data = new byte[12];
+            for (var i = 0; i < Data.Length; i++)
+            {
+                data[11 - i] = Data[i];
+            }
+            data[3] = MonitorAddress;
+            data[2] = ModuleAddress;
+            data[1] = CommandType;
+            data[0] = (byte) (Convert.ToByte(Dp) | (Convert.ToByte(Reserve) << 1) | (Convert.ToByte(Dp) << 2));
+            return data;
         }
     }
 }
