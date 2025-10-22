@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe.Models
 {
-    public class AcInfo
+    public class AcInfoTonhe
     {
-        public AcInfo(byte[] data)
+        public AcInfoTonhe(byte[] data)
         {
             APhaseVoltage = (float)BitConverter.ToUInt16(data, 0) / 10;
             BPhaseVoltage = (float)BitConverter.ToUInt16(data, 2) / 10;

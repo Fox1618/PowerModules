@@ -1,0 +1,13 @@
+﻿using System;
+
+namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
+{
+    public class RPackUugreenReadOutputVoltage : RPackUugreenBase
+    {
+        public RPackUugreenReadOutputVoltage(byte[] data): base(data)
+        {
+            Voltage = (float)BitConverter.ToUInt32(Data, 0) / 1000;
+        }
+        public float Voltage { get; set; }
+    }
+}

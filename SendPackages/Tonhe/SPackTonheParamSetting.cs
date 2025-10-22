@@ -9,7 +9,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
         public SPackTonheParamSetting()
         {
             CommandType = (byte) CommandCodesTonhe.ParameterSetting;
-            MonitorAddress = byte.MaxValue;
+            ModuleAddress = byte.MaxValue;
             NeedAnswer = true;
         }
         public byte[] Addresses { get; set; } = { byte.MaxValue, byte.MaxValue, byte.MaxValue};

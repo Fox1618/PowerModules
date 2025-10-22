@@ -46,10 +46,13 @@
   <ItemGroup>
     <Compile Include="Common\CommandCodesUugreen.cs" />
     <Compile Include="Common\PackInterfaces.cs" />
+    <Compile Include="Common\StateAttribute.cs" />
+    <Compile Include="Common\StateBase.cs" />
     <Compile Include="Interfaces\IParserPmModulesRPackages.cs" />
     <Compile Include="Interfaces\IPmSender.cs" />
     <Compile Include="Interfaces\IPowerModuleCommon.cs" />
     <Compile Include="ParsersRPack\ParserOuterPackPmModules.cs" />
+    <Compile Include="ParsersRPack\ParserUugreenRPackage.cs" />
     <Compile Include="ParsersRPack\ParserTonheRPackage.cs" />
     <Compile Include="ParsersRPack\ParserPmModulesBase.cs" />
     <Compile Include="PowerModulesNinjectModule.cs" />
@@ -58,10 +61,21 @@
     <Compile Include="ReceivePackages\Tonhe\RPackTonheAcInfo.cs" />
     <Compile Include="ReceivePackages\Tonhe\RPackTonheModuleState.cs" />
     <Compile Include="Common\CommandCodesTonhe.cs" />
-    <Compile Include="ReceivePackages\Tonhe\Models\AcInfo.cs" />
-    <Compile Include="ReceivePackages\Tonhe\Models\ModuleState.cs" />
+    <Compile Include="ReceivePackages\Tonhe\Models\AcInfoTonhe.cs" />
+    <Compile Include="ReceivePackages\Tonhe\Models\ModuleStateTonhe.cs" />
     <Compile Include="ReceivePackages\Tonhe\RPackTonheBase.cs" />
+    <Compile Include="ReceivePackages\Uugreen\Models\HiLoModeOnOffUugreen.cs" />
+    <Compile Include="ReceivePackages\Uugreen\Models\StatusFlagsUugreen.cs" />
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenBase.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenAllSetData.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenReadCurrentCapability.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenReadStatusFlags.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenShutdown.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenPowerOn.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenReadOutputCurrent.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenReadOutputVoltage.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetCurrentLimit.cs" />
+    <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetOutputVoltageRef.cs" />
     <Compile Include="Senders\PmUugreenSender.cs" />
     <Compile Include="Senders\PmTonheSender.cs" />
     <Compile Include="ReceivePackages\RPackPmModulesBase.cs" />
@@ -74,6 +88,22 @@
     <Compile Include="SendPackages\Tonhe\SPackTonheStartStop.cs" />
     <Compile Include="SendPackages\Tonhe\SPackTonheTiming.cs" />
     <Compile Include="SendPackages\Uugreen\SPackUugreenBase.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenPowerOn.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenAllSetData.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenReadCurrentCapability.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenStatusFlags.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenStatusFlagsAll.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenShutdown.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenShutdownAll.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenReadOutputCurrent.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenReadOutputVoltage.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenReadOutputCurrentAll.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenPowerOnAll.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenReadOutputVoltageAll.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenSetCurrentLimit.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenSetOutputVoltageRef.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenSetCurrentLimitAll.cs" />
+    <Compile Include="SendPackages\Uugreen\SPackUugreenSetOutputVoltageRefAll.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

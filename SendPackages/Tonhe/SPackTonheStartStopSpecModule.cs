@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Telemetria.Hardware.PowerModules.Common;
-using Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe;
 
 namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
 {
     public class SPackTonheStartStopSpecModule : SPackTonheBase
     {
-        public SPackTonheStartStopSpecModule()
+        public SPackTonheStartStopSpecModule(byte moduleAddress)
         {
             CommandType = (byte) CommandCodesTonhe.StartStopSpecModule;
             NeedAnswer = true;
+            ModuleAddress = moduleAddress;
         }
         public bool IsStart { get; set; }
         public byte Mode { get; set; } = 0;

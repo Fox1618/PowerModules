@@ -1,4 +1,6 @@
-﻿using Telemetria.Hardware.PowerModules.Common;
+﻿using Hardware.DeviceSending.Interfaces;
+using Hardware.DeviceSending;
+using Telemetria.Hardware.PowerModules.SendPackages.Tonhe;
 
 namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe
 {
@@ -18,5 +20,12 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe
         public bool Dp { get; set; }
         public byte Priority { get; set; }
         public bool Reserve { get; set; }
+        public override StatusPack CheckStatus(ISPackBase sendPack)
+        {
+            Status = StatusPack.Unfit;
+            if (!(sendPack is SPackTonheBase pack)) return Status = StatusPack.Undefined;
+            if (CommandType != pack.CommandType) return Status;
+            return Status = StatusPack.Success;
+        }
     }
 }
