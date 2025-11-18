@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Telemetria.Hardware.PowerModules.Common;
 
 namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
@@ -11,6 +12,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
             Reserve = false;
             Priority = 6;
         }
+
         public bool Dp { get; set; }
         public byte Priority { get; set; }
         public bool Reserve { get; set; }
@@ -22,11 +24,18 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
             {
                 data[11 - i] = Data[i];
             }
+
             data[3] = MonitorAddress;
             data[2] = ModuleAddress;
             data[1] = CommandType;
             data[0] = (byte) (Convert.ToByte(Dp) | (Convert.ToByte(Reserve) << 1) | (Convert.ToByte(Dp) << 2));
             return data;
+        }
+
+        protected (byte groupAddress, byte[] addresses) _getAddress(byte address)
+        {
+            return ((byte) (address / 24),
+                BitConverter.GetBytes(Math.Pow(2, address % 24)).Reverse().ToArray().SubArray(1, 3));
         }
     }
 }

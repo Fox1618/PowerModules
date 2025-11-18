@@ -37,6 +37,6 @@ namespace Telemetria.Hardware.PowerModules.Common
             }
         }
 
-        public uint Code => BitConverter.ToUInt32(_Data, 0);
+        public virtual uint Code => BitConverter.ToUInt32(_Data, 0);
     }
 }

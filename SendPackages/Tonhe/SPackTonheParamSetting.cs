@@ -1,14 +1,15 @@
 ﻿using System;
 using Telemetria.Hardware.PowerModules.Common;
-using Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe;
 
 namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
 {
     public class SPackTonheParamSetting : SPackTonheBase
     {
-        public SPackTonheParamSetting()
+        public SPackTonheParamSetting(byte address, float voltage, float current)
         {
             CommandType = (byte) CommandCodesTonhe.ParameterSetting;
+            Voltage = voltage;
+            Current = current;
             ModuleAddress = byte.MaxValue;
             NeedAnswer = true;
         }

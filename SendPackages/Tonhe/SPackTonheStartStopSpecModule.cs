@@ -6,7 +6,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
 {
     public class SPackTonheStartStopSpecModule : SPackTonheBase
     {
-        public SPackTonheStartStopSpecModule(byte moduleAddress)
+        public SPackTonheStartStopSpecModule(byte moduleAddress, float voltage, float current)
         {
             CommandType = (byte) CommandCodesTonhe.StartStopSpecModule;
             NeedAnswer = true;
@@ -25,6 +25,10 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
                 {
                     [0] = IsStart ? Constants.StartCode : Constants.StopCode
                 };
+                if (!IsStart) {
+                    Voltage = 0;
+                    Current = 0;
+                }
                 data.Add(Mode);
                 data.AddRange(BitConverter.GetBytes((ushort)Voltage*10));
                 data.AddRange(BitConverter.GetBytes((ushort)Current * 10));

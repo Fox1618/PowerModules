@@ -1,17 +1,19 @@
 ﻿using Telemetria.Hardware.PowerModules.Common;
-using Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe;
 
 namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
 {
     public class SPackTonheStartStop : SPackTonheBase
     {
-        public SPackTonheStartStop()
+        public SPackTonheStartStop(byte? address = null)
         {
+            if (address != null) {
+                (GroupAddress, Addresses) = _getAddress(address.Value);
+            }
             CommandType = (byte) CommandCodesTonhe.StartStop;
             ModuleAddress = byte.MaxValue;
         }
         public byte[] Addresses { get; set; } = { byte.MaxValue, byte.MaxValue, byte.MaxValue};
-        public byte GroupAddress { get; set; } = 0;
+        public byte GroupAddress { get; set; }
         public byte[] Standby { get; set; } = new byte[3];
         public bool IsStart { get; set; }
 

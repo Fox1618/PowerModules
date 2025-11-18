@@ -16,30 +16,40 @@ namespace Telemetria.Hardware.PowerModules.Senders
         {
         }
 
-        public async Task<bool> PowerOn(byte? address = null)
+        public async Task<bool> PowerOnOffAll(bool isStart)
         {
-            if (address == null)
+            if (isStart)
             {
-                var sPackAll= new SPackUugreenPowerOnAll();
+                var sPackAll = new SPackUugreenPowerOnAll();
                 var resAll = await SendPackageAsyncBool(sPackAll);
                 return resAll.Result;
             }
-            var sPackSpec = new SPackUugreenPowerOn(address.Value);
-            var resSpec = await SendPackageAsync(sPackSpec);
-            return resSpec != null;
-        }
-
-        public async Task<bool> ShutDown(byte? address = null)
-        {
-            if (address == null)
+            else
             {
                 var sPackAll = new SPackUugreenShutdownAll();
                 var resAll = await SendPackageAsyncBool(sPackAll);
                 return resAll.Result;
             }
-            var sPackSpec = new SPackUugreenShutdown(address.Value);
-            var resSpec = await SendPackageAsync(sPackSpec);
-            return resSpec != null;
+        }
+
+        public async Task<bool> PowerOnOffSpecModule(bool isStart, byte address, float? voltage = null, float? current = null)
+        {
+            if (isStart)
+            {
+                if (voltage != null && current != null) {
+                    var resSet = await SetVoltageAndCurrent(address, voltage.Value, current.Value);
+                    if (!resSet) return false;
+                }
+                var sPackSpec = new SPackUugreenPowerOn(address);
+                var resSpec = await SendPackageAsync(sPackSpec);
+                return resSpec != null;
+            }
+            else
+            {
+                var sPackSpec = new SPackUugreenShutdown(address);
+                var resSpec = await SendPackageAsync(sPackSpec);
+                return resSpec != null;
+            }
         }
 
         public async Task<bool> SetVoltageAndCurrent(byte address, float voltage, float current)
@@ -69,12 +79,28 @@ namespace Telemetria.Hardware.PowerModules.Senders
             return (rGetOutputVoltage.Current, rGetCurrent.Current);
         }
 
-        public async Task<(bool isValid, string errors, uint code)?> GetStatus(byte address)
+        public async Task<StateBase> GetStatus(byte address)
         {
             var sPack = new SPackUugreenReadStatusFlags(address);
             var resStatus = await SendPackageAsyncBool(sPack);
             if (!resStatus.Result || !(resStatus.Pack is RPackUugreenReadStatusFlags rGetStatus)) return null;
-            return (!rGetStatus.Flags.IsHaveFault, rGetStatus.Flags.Errors, rGetStatus.Flags.Code);
+            return rGetStatus.Flags;
+        }
+
+        public void Start()
+        {
+        }
+
+        public void Stop()
+        {
+        }
+
+        public async Task<(float voltage, float current, StateBase)?> GetVoltageCurrentAndStatus(byte address)
+        {
+            var voltCurrent = await GetVoltageCurrent(address);
+            if (voltCurrent == null) return null;
+            var state = await GetStatus(address);
+            return (voltCurrent.Value.voltage, voltCurrent.Value.current, state);
         }
     }
 }
