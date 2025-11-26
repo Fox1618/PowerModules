@@ -1,5 +1,7 @@
-﻿using Hardware.DeviceSending.Interfaces;
+﻿using System;
+using Hardware.DeviceSending.Interfaces;
 using Hardware.DeviceSending;
+using Telemetria.Hardware.PowerModules.Common;
 using Telemetria.Hardware.PowerModules.SendPackages.Tonhe;
 
 namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe
@@ -23,8 +25,18 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe
         public override StatusPack CheckStatus(ISPackBase sendPack)
         {
             Status = StatusPack.Unfit;
+            if (CommandType == (int) CommandCodesTonhe.AcInfo ||
+                CommandType == (int) CommandCodesTonhe.ChargingState)
+            {
+                return Status = StatusPack.Broadcast;
+            }
             if (!(sendPack is SPackTonheBase pack)) return Status = StatusPack.Undefined;
-            if (CommandType != pack.CommandType) return Status;
+            //if (CommandType != pack.CommandType) return Status;
+            if(pack.ModuleAddress != 0xFF && ModuleAddress != pack.ModuleAddress) return Status;
+            if (CommandType == (int) CommandCodesTonhe.ConfirmationStartStop &&
+                this is RPackTonheConfirmStartStop packConfirm && !packConfirm.IsReceived) {
+                return Status = StatusPack.Fail;
+            }
             return Status = StatusPack.Success;
         }
     }

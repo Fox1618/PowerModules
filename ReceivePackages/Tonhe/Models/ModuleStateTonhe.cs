@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Linq;
 using System.Reflection;
 using Telemetria.Hardware.Charger.Models.Common;
@@ -17,9 +18,9 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe.Models
     {
         public ModuleStateTonhe(byte[] data) {
             State = (ChargingState)data[0];
-            Voltage = BitConverter.ToUInt16(data.SubArray(1, 2), 0);
-            Current = BitConverter.ToUInt16(data.SubArray(3, 2), 0);
-            StateBits = new StateBitsTonhe(data.SubArray(5, 3));
+            Voltage = (float)BitConverter.ToUInt16(data.SubArray(1, 2).ToArray(), 0) / 10;
+            Current = (float)BitConverter.ToUInt16(data.SubArray(3, 2).ToArray(), 0) / 10;
+            StateBits = new StateBitsTonhe(data.SubArray(5, 3), State);
         }
         public ChargingState State { get; set; }
         public float Voltage { get; set; }
@@ -29,8 +30,9 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe.Models
 
     public class StateBitsTonhe : StateBase
     {
-        public StateBitsTonhe(byte[] data) : base(data)
+        public StateBitsTonhe(byte[] data, ChargingState chargingState) : base(data)
         {
+            IsChargingStateFault = chargingState == ChargingState.FaultOff;
             var b1 = data[0];
             InputUnderVoltage = Helper.GetBit(b1, 1);
             InputPhaseLoss = Helper.GetBit(b1, 2);
@@ -86,5 +88,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe.Models
         public bool BusDias { get; set; }
         public bool PhaseExceptionFault { get; set; }
         public bool BusOverVoltageFault { get; set; }
+        public bool IsChargingStateFault { get; set; }
+        public override uint Code => BitConverter.ToUInt32(new byte[] {_Data[0], _Data[1], _Data[2], 0}, 0);
     }
 }

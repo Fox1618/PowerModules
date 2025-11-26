@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
 {
@@ -6,7 +7,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
     {
         public RPackUugreenReadOutputVoltage(byte[] data): base(data)
         {
-            Voltage = (float)BitConverter.ToUInt32(Data, 0) / 1000;
+            Voltage = (float)BitConverter.ToUInt32(Data.Reverse().ToArray(), 0) / 1000;
         }
         public float Voltage { get; set; }
     }

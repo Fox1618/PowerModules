@@ -24,6 +24,7 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
             {
                 Log.Info("GetReceivePack: " + data.ToStrWoDashes());
                 var dataInner = _ParserOuterPack.ParseData(data);
+                if (dataInner == null) return null;
                 return (T) getPack(dataInner, packS);
             }
             catch (Exception e)

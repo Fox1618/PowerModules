@@ -13,6 +13,6 @@ namespace Telemetria.Hardware.PowerModules.Interfaces
         Task<StateBase> GetStatus(byte address);
         void Start();
         void Stop();
-        Task<(float voltage, float current, StateBase)?> GetVoltageCurrentAndStatus(byte address);
+        Task<PmInfo> GetVoltageCurrentAndStatus(byte address);
     }
 }

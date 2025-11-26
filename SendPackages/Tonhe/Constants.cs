@@ -2,7 +2,7 @@
 {
     public static class Constants
     {
-        public static byte StartCode { get; set; }
-        public static byte StopCode { get; set; }
+        public static byte StartCode = 0xAA;
+        public static byte StopCode = 0x55;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Telemetria.Hardware.PowerModules.Common;
 
@@ -11,6 +12,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
             Dp = false;
             Reserve = false;
             Priority = 6;
+            MonitorAddress = 0xA0;
         }
 
         public bool Dp { get; set; }
@@ -19,23 +21,36 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
 
         public override byte[] ToByte()
         {
-            var data = new byte[12];
-            for (var i = 0; i < Data.Length; i++)
+            var res = new List<byte>();
+            if (Prefix != null)
+                res.Add(Prefix.Value);
+            res.Add((byte)(Convert.ToByte(Dp) | (Convert.ToByte(Reserve) << 1) | (Convert.ToByte(Priority) << 2)));
+            res.Add(CommandType);
+            res.Add(ModuleAddress);
+            res.Add(MonitorAddress);
+            res.AddRange(Data);
+            return res.ToArray();
+            /*var data = new byte[12];
+            var dataMain = Data;
+            for (var i = 0; i < dataMain.Length; i++)
             {
-                data[11 - i] = Data[i];
+                data[11 - i] = dataMain[i];
             }
 
             data[3] = MonitorAddress;
             data[2] = ModuleAddress;
             data[1] = CommandType;
             data[0] = (byte) (Convert.ToByte(Dp) | (Convert.ToByte(Reserve) << 1) | (Convert.ToByte(Dp) << 2));
-            return data;
+            return data;*/
         }
 
         protected (byte groupAddress, byte[] addresses) _getAddress(byte address)
         {
+            var pow = (uint)Math.Pow(2, address % 24 - 1);
+            var bytes = BitConverter.GetBytes(pow);
+            var res = bytes.Reverse().ToArray().SubArray(1, 3);
             return ((byte) (address / 24),
-                BitConverter.GetBytes(Math.Pow(2, address % 24)).Reverse().ToArray().SubArray(1, 3));
+                BitConverter.GetBytes((uint)Math.Pow(2, address % 24 - 1)).Reverse().ToArray().SubArray(1, 3));
         }
     }
 }

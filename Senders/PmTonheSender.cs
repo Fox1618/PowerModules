@@ -4,10 +4,13 @@ using System.Threading.Tasks;
 using System.Timers;
 using Hardware.DeviceSending;
 using Hardware.DeviceSending.Interfaces;
+using ProgrammingWeapons;
+using ProgrammingWeapons.Logging;
 using Telemetria.Hardware.PowerModules.Common;
 using Telemetria.Hardware.PowerModules.Interfaces;
 using Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe;
 using Telemetria.Hardware.PowerModules.SendPackages.Tonhe;
+using Telemetria.Hardware.TcpDevices;
 using Timer = System.Timers.Timer;
 
 namespace Telemetria.Hardware.PowerModules.Senders
@@ -19,7 +22,7 @@ namespace Telemetria.Hardware.PowerModules.Senders
         private ConcurrentDictionary<byte, (RPackTonheModuleState state, bool isWaiting, AutoResetEvent re)> _packStates;
 
         public TonhePmSender(IDeviceSending deviceSending, IParserPmModulesRPackage<T> parserRPackage) : base(
-            deviceSending, parserRPackage)
+            deviceSending, parserRPackage, false)
         {
             _timerTiming = new Timer(5000){ AutoReset = true};
             _timerTiming.Elapsed += timerTimingElapsed;
@@ -29,6 +32,8 @@ namespace Telemetria.Hardware.PowerModules.Senders
 
         private void onReceivedPack(T packP)
         {
+            if((int)packP.Status <= 1) return;
+            Log.Info(JsonHelper.ReplaceBrackets(JsonHelper.SerializeObject(packP)));
             if (!_packStates.TryGetValue(packP.ModuleAddress, out var value) || !value.isWaiting) return;
             var pack = (IRPackPmModulesBase) packP;
             if (pack is RPackTonheModuleState packState)
@@ -67,8 +72,8 @@ namespace Telemetria.Hardware.PowerModules.Senders
                 if (voltage != null && current != null)
                 {
                     var sPackSpec = new SPackTonheStartStopSpecModule(address, voltage.Value, current.Value) { IsStart = true };
-                    var resSpec = await SendPackageAsync(sPackSpec);
-                    return resSpec != null;
+                    var resSpec = await SendPackageAsyncBool(sPackSpec);
+                    return resSpec.Result;
                 }
                 var sPackAll = new SPackTonheStartStop (address) { IsStart = true };
                 var resAll = await SendPackageAsyncBool(sPackAll);
@@ -85,8 +90,8 @@ namespace Telemetria.Hardware.PowerModules.Senders
         public async Task<bool> SetVoltageAndCurrent(byte address, float voltage, float current)
         {
             var sPackSpec = new SPackTonheParamSetting(address, voltage, current);
-            var resSpec = await SendPackageAsync(sPackSpec);
-            return resSpec != null;
+            var resSpec = await SendPackageAsyncBool(sPackSpec);
+            return resSpec.Result;
         }
 
         public async Task<(float voltage, float current)?> GetVoltageCurrent(byte address)
@@ -103,29 +108,45 @@ namespace Telemetria.Hardware.PowerModules.Senders
 
         public void Start()
         {
-            _timerTiming.Start();
+            if (DeviceSending is TcpDevice tcpDevice)
+            {
+                if (tcpDevice.Connect())
+                {
+                    tcpDevice.StartListen();
+                    timerTimingElapsed(null, null);
+                    _timerTiming.Start();
+                }
+            }
         }
 
         public void Stop()
         {
             _timerTiming.Stop();
+            if (DeviceSending is TcpDevice tcpDevice) {
+                tcpDevice.StopListen();
+            }
         }
 
-        public async Task<(float voltage, float current, StateBase)?> GetVoltageCurrentAndStatus(byte address)
+        public async Task<PmInfo> GetVoltageCurrentAndStatus(byte address)
         {
             var packState = await getCurrentState(address);
             if (packState == null) return null;
-            return (packState.State.Voltage, packState.State.Current, packState.State.StateBits);
+            return new PmInfo {Voltage = packState.State.Voltage, Current = packState.State.Current, State = packState.State.StateBits};
         }
 
         private async Task<RPackTonheModuleState> getCurrentState(byte address)
         {
           return await Task.Run(() =>
           {
-              var r = _packStates.AddOrUpdate(address, b => (null, true, new AutoResetEvent(true)),
+              var isExist = _packStates.TryGetValue(address, out var value);
+              if (isExist)
+                  value.re.WaitOne(3000);
+              var r = _packStates.AddOrUpdate(address, b => (null, true, new AutoResetEvent(false)),
                   (b, tuple) => (null, true, tuple.re));
-              r.re.WaitOne(3000);
-              return _packStates[address].state;
+              var resWait = r.re.WaitOne(3000);
+              var state = resWait? _packStates[address].state : null;
+              r.re.Set();
+              return state;
           });
         }
     }

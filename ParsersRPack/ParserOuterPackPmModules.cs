@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telemetria.Hardware.PowerModules.Interfaces;
+﻿using Telemetria.Hardware.PowerModules.Interfaces;
 
 namespace Telemetria.Hardware.PowerModules.ParsersRPack
 {
@@ -11,7 +6,8 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
     {
         public byte[] ParseData(byte[] data)
         {
-            throw new NotImplementedException();
+            if (data[0] != 0x88) return null;
+            return data.SubArray(1, data.Length - 1);
         }
     }
 }

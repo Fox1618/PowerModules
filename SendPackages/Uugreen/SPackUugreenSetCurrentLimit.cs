@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Telemetria.Hardware.PowerModules.Common;
 
 namespace Telemetria.Hardware.PowerModules.SendPackages.Uugreen
@@ -14,6 +15,6 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Uugreen
             ModuleAddress = moduleAddress;
         }
         public float Current { get; set; }
-        public override byte[] Data => BitConverter.GetBytes((uint) (Current * 1000));
+        public override byte[] Data => BitConverter.GetBytes((uint) (Current * 1000)).Reverse().ToArray();
     }
 }

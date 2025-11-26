@@ -9,30 +9,31 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
     {
         public RPackUugreenBase(byte[] data) : base(data)
         {
-            Protocol = Helper.GetBits(data[11], 2, 4);
-            MonitorAddress = (byte) (Helper.GetBits(data[11], 1, 1) << 3 | Helper.GetBits(data[10], 6, 3));
-            ModuleAddress = (byte) (Helper.GetBits(data[10], 1, 5) << 2 | Helper.GetBits(data[9], 7, 2));
-            ProductionDate = Helper.GetBits(data[9], 2, 5);
-            SerialNumberLowerPart = (ushort) (Helper.GetBits(data[9], 1, 1) << 7 | data[8]);
-            GroupAddress = Helper.GetBits(data[7], 5, 4);
+            Protocol = Helper.GetBits(data[0], 2, 4);
+            MonitorAddress = (byte) (Helper.GetBits(data[0], 8, 1) << 3 | Helper.GetBits(data[1], 6, 3));
+            ModuleAddress = (byte) (Helper.GetBits(data[1], 1, 5) << 2 | Helper.GetBits(data[2], 7, 2));
+            ProductionDate = Helper.GetBits(data[2], 2, 5);
+            SerialNumberLowerPart = (ushort)(Helper.GetBits(data[2], 1, 1) << 8 | data[3]);
+
+            GroupAddress = Helper.GetBits(data[4], 5, 4);
             MessageType = GetMessageType(data);
             CommandType = GetCommandType(data);
-            Reserve = data.SubArray(4, 2);
+            Reserve = data.SubArray(6, 2);
             Data = GetData(data);
         }
 
         public static byte GetMessageType(byte[] data)
         {
-            return Helper.GetBits(data[7], 1, 4);
+            return Helper.GetBits(data[4], 1, 4);
         }
 
         public static byte GetCommandType(byte[] data)
         {
-            return data[6];
+            return data[5];
         }
         public static byte[] GetData(byte[] data)
         {
-            return data.SubArray(0, 4);
+            return data.SubArray(8, 4);
         }
         public byte Protocol { get; set; }
         public byte ProductionDate { get; set; }
@@ -45,7 +46,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
             Status = StatusPack.Unfit;
             if (!(sendPack is SPackUugreenBase pack)) return Status = StatusPack.Undefined;
             if (CommandType != pack.CommandType) return Status;
-            if (pack.ModuleAddress != 0 &&pack.ModuleAddress != ModuleAddress) return Status;
+            if (pack.ModuleAddress != 0 && pack.ModuleAddress != ModuleAddress) return Status;
             if (MessageType == (byte)MessageTypeUugreen.SetData &&
                 pack.MessageType != (byte)MessageTypeUugreen.SetDataResponse) return Status;
             if (MessageType == (byte) MessageTypeUugreen.ReadDataResponse &&

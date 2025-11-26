@@ -13,6 +13,7 @@ namespace Telemetria.Hardware.PowerModules.Common
         {
             _Data = data;
         }
+        [State(true)]
         public bool IsHaveFault => _PropertiesFailures.Any();
 
         private List<PropertyInfo> _propertiesFailuresL;
@@ -23,17 +24,18 @@ namespace Telemetria.Hardware.PowerModules.Common
             {
                 if (_propertiesFailuresL != null) return _propertiesFailuresL;
                 _propertiesFailuresL = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p =>
+                    p.GetCustomAttribute<StateAttribute>()?.IsNotFailure != true &&
                     p.PropertyType ==
-                    typeof(bool) && (bool)p.GetValue(this) &&
-                    p.GetCustomAttribute<StateAttribute>()?.IsNotFailure != true).ToList();
+                    typeof(bool) && (bool)p.GetValue(this)).ToList();
                 return _propertiesFailuresL;
             }
         }
+        [State(true)]
         public string Errors
         {
             get
             {
-                return !IsHaveFault ? "" : _PropertiesFailures.Aggregate("", (accum, current) => accum + ", " + current.Name);
+                return !IsHaveFault ? "" : string.Join(",", _PropertiesFailures.Select(x => x.Name));
             }
         }
 

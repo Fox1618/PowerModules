@@ -2,7 +2,7 @@
 
 namespace Telemetria.Hardware.PowerModules.Common
 {
-    public interface IPackPModuleBase
+    public interface IPackPModuleBase 
     {
         byte MonitorAddress { get; set; }
         byte ModuleAddress { get; set; }

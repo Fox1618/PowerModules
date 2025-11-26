@@ -11,7 +11,6 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Uugreen
             CommandType = (byte) CommandCodesUugreen.IOutSlow;
             MonitorAddress = 1;
             ModuleAddress = moduleAddress;
-            MonitorAddress = 1;
         }
         public float Current { get; set; }
         public override byte[] Data => new byte[4];

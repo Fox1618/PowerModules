@@ -22,6 +22,7 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
             {
                 Log.Info("GetReceivePack: " + data.ToStrWoDashes());
                 var dataInner = _ParserOuterPack.ParseData(data);
+                if (dataInner == null) return null;
                 return (T) getPack(dataInner, packS);
             }
             catch (Exception e)
@@ -33,6 +34,7 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
 
         private IRPackPmModulesBase getPack(byte[] data, ISPackBase packS = null)
         {
+            Log.Info("CmdCode: " + data[1].ToString("x2"));
             var cmdCode = (CommandCodesTonhe)data[1];
             switch (cmdCode)
             {

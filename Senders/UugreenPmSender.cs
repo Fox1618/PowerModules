@@ -2,18 +2,29 @@
 using System.Threading.Tasks;
 using Hardware.DeviceSending;
 using Hardware.DeviceSending.Interfaces;
+using ProgrammingWeapons.Logging;
+using ProgrammingWeapons;
 using Telemetria.Hardware.PowerModules.Common;
 using Telemetria.Hardware.PowerModules.Interfaces;
 using Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen;
 using Telemetria.Hardware.PowerModules.SendPackages.Uugreen;
+using Telemetria.Hardware.TcpDevices;
 
 namespace Telemetria.Hardware.PowerModules.Senders
 {
-    public class PmUugreenSender<T> : DeviceSendingWrapper<T>, IPmSender<T> where T : IRPackPmModulesBase
+    public sealed class UugreenPmSender<T> : DeviceSendingWrapper<T>, IPmSender<T> where T : IRPackPmModulesBase
     {
-        public PmUugreenSender(IDeviceSending deviceSending, IParserPmModulesRPackage<T> parserRPackage) : base(
-            deviceSending, parserRPackage)
+        public UugreenPmSender(IDeviceSending deviceSending, IParserPmModulesRPackage<T> parserRPackage) : base(
+            deviceSending, parserRPackage, false)
         {
+            deviceSending.IsWriteLog = false;
+            ReceivedPack += OnReceivedPack;
+        }
+
+        private void OnReceivedPack(T packP)
+        {
+            if ((int)packP.Status <= 1) return;
+            Log.Info(JsonHelper.ReplaceBrackets(JsonHelper.SerializeObject(packP)));
         }
 
         public async Task<bool> PowerOnOffAll(bool isStart)
@@ -56,8 +67,8 @@ namespace Telemetria.Hardware.PowerModules.Senders
         {
             var sPackVoltage = new SPackUugreenSetOutputVoltageRef(voltage, address);
             var resVoltage = await SendPackageAsyncBool(sPackVoltage);
-            if (!resVoltage.Result || !(resVoltage.Pack is RPackUugreenSetCurrentLimit rSetOutputVoltage) ||
-                Math.Abs(rSetOutputVoltage.Current - voltage) > 0.1) return false;
+            if (!resVoltage.Result || !(resVoltage.Pack is RPackUugreenSetOutputVoltageRef rSetOutputVoltage) ||
+                Math.Abs(rSetOutputVoltage.Voltage - voltage) > 0.1) return false;
 
             var sPackCurrent = new SPackUugreenSetCurrentLimit(current, address);
             var resCurrent = await SendPackageAsyncBool(sPackCurrent);
@@ -70,13 +81,13 @@ namespace Telemetria.Hardware.PowerModules.Senders
         {
             var sPackVoltage = new SPackUugreenReadOutputVoltage(address);
             var resVoltage = await SendPackageAsyncBool(sPackVoltage);
-            if (!resVoltage.Result || !(resVoltage.Pack is RPackUugreenSetCurrentLimit rGetOutputVoltage)) return null;
+            if (!resVoltage.Result || !(resVoltage.Pack is RPackUugreenReadOutputVoltage rGetOutputVoltage)) return null;
 
             var sPackCurrent = new SPackUugreenReadOutputCurrent(address);
             var resCurrent = await SendPackageAsyncBool(sPackCurrent);
-            if (!resCurrent.Result || !(resCurrent.Pack is RPackUugreenSetCurrentLimit rGetCurrent)) return null;
+            if (!resCurrent.Result || !(resCurrent.Pack is RPackUugreenReadOutputCurrent rGetCurrent)) return null;
 
-            return (rGetOutputVoltage.Current, rGetCurrent.Current);
+            return (rGetOutputVoltage.Voltage, rGetCurrent.Current);
         }
 
         public async Task<StateBase> GetStatus(byte address)
@@ -89,18 +100,25 @@ namespace Telemetria.Hardware.PowerModules.Senders
 
         public void Start()
         {
+            if (DeviceSending is TcpDevice tcpDevice) {
+                if (tcpDevice.Connect())
+                    tcpDevice.StartListen();
+            }
         }
 
         public void Stop()
         {
+            if (DeviceSending is TcpDevice tcpDevice) {
+                tcpDevice.StopListen();
+            }
         }
 
-        public async Task<(float voltage, float current, StateBase)?> GetVoltageCurrentAndStatus(byte address)
+        public async Task<PmInfo> GetVoltageCurrentAndStatus(byte address)
         {
             var voltCurrent = await GetVoltageCurrent(address);
             if (voltCurrent == null) return null;
             var state = await GetStatus(address);
-            return (voltCurrent.Value.voltage, voltCurrent.Value.current, state);
+            return new PmInfo{Voltage = voltCurrent.Value.voltage, Current = voltCurrent.Value.current, State = state};
         }
     }
 }

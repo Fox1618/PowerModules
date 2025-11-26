@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Common\CommandCodesUugreen.cs" />
     <Compile Include="Common\PackInterfaces.cs" />
+    <Compile Include="Common\PmInfo.cs" />
     <Compile Include="Common\StateAttribute.cs" />
     <Compile Include="Common\StateBase.cs" />
     <Compile Include="Interfaces\IParserPmModulesRPackages.cs" />
@@ -76,7 +79,7 @@
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenReadOutputVoltage.cs" />
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetCurrentLimit.cs" />
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetOutputVoltageRef.cs" />
-    <Compile Include="Senders\PmUugreenSender.cs" />
+    <Compile Include="Senders\UugreenPmSender.cs" />
     <Compile Include="Senders\PmTonheSender.cs" />
     <Compile Include="ReceivePackages\RPackPmModulesBase.cs" />
     <Compile Include="SendPackages\SPackPModulesBase.cs" />
