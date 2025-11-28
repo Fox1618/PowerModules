@@ -15,6 +15,6 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Uugreen
             ModuleAddress = moduleAddress;
         }
         public float Current { get; set; }
-        public override byte[] Data => BitConverter.GetBytes((uint) (Current * 1000)).Reverse().ToArray();
+        public override byte[] Data => BitConverter.GetBytes((uint) (Current * COEF_AV)).Reverse().ToArray();
     }
 }

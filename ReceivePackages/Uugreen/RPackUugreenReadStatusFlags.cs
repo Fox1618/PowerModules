@@ -7,7 +7,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
     {
         public RPackUugreenReadStatusFlags(byte[] data): base(data)
         {
-            Flags = new StatusFlagsUugreen(data);
+            Flags = new StatusFlagsUugreen(Data);
         }
         public StatusFlagsUugreen Flags { get; set; }
     }

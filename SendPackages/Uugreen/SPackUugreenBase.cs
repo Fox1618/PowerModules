@@ -5,6 +5,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Uugreen
 {
     public class SPackUugreenBase : SPackPModulesBase, IPackUugreenBase
     {
+        public const int COEF_AV = 1000;
         public SPackUugreenBase()
         {
             NeedAnswer = true;

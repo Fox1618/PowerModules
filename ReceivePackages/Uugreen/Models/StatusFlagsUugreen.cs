@@ -1,4 +1,5 @@
-﻿using Telemetria.Hardware.PowerModules.Common;
+﻿using System;
+using Telemetria.Hardware.PowerModules.Common;
 
 namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models
 {
@@ -14,7 +15,8 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models
        
         public StatusFlagsUugreen(byte[] data): base(data)
         {
-            var b1 = data[0];
+            var res = BitConverter.ToUInt32(data, 0).ToString("x2");
+            var b1 = data[3];
             AcOverVoltage = Helper.GetBit(b1, 1);
             AcUnderVoltage = Helper.GetBit(b1, 2);
             DisconnectFromAc = Helper.GetBit(b1, 3);
@@ -24,7 +26,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models
             DcOutputOverVoltage = Helper.GetBit(b1, 7);
             DcOverVoltageShutdown = Helper.GetBit(b1, 8);
 
-            var b2 = data[1];
+            var b2 = data[2];
             DcOutputUnderVoltage = Helper.GetBit(b2, 1);
             FanStopsOperating = Helper.GetBit(b2, 2);
             Reserved1 = Helper.GetBit(b2, 3);
@@ -34,7 +36,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models
             PfcOverTempProtection1 = Helper.GetBit(b2, 7);
             OutputRelayFailure = Helper.GetBit(b2, 8);
 
-            var b3 = data[2];
+            var b3 = data[1];
             DcOverTempProtection1 = Helper.GetBit(b3, 1);
             DcOverTempProtection2 = Helper.GetBit(b3, 2);
             CommunicationFailurePfcDcDc = Helper.GetBit(b3, 3);
@@ -44,7 +46,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models
             Reserved2 = Helper.GetBit(b3, 7);
             Reserved3 = Helper.GetBit(b3, 8);
 
-            var b4 = data[3];
+            var b4 = data[0];
             PfcState = Helper.GetBit(b4, 1);
             ModuleStatus = Helper.GetBit(b4, 2);
             OutputMode = (OutputModeUugreen) Helper.GetBits(b4, 3, 2);

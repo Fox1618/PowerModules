@@ -81,9 +81,12 @@ namespace Telemetria.Hardware.PowerModules.Senders
             }
             else
             {
-                var sPackAll = new SPackTonheStartStop (address) { IsStart = false };
+                var sPackSpec = new SPackTonheStartStopSpecModule(address, 0, 0) { IsStart = false };
+                var resSpec = await SendPackageAsyncBool(sPackSpec);
+                return resSpec.Result;
+                /*var sPackAll = new SPackTonheStartStop (address) { IsStart = false};
                 var resAll = await SendPackageAsyncBool(sPackAll);
-                return resAll.Result;
+                return resAll.Result;*/
             }
         }
 

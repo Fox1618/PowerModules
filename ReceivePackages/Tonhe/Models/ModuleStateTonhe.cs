@@ -19,7 +19,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe.Models
         public ModuleStateTonhe(byte[] data) {
             State = (ChargingState)data[0];
             Voltage = (float)BitConverter.ToUInt16(data.SubArray(1, 2).ToArray(), 0) / 10;
-            Current = (float)BitConverter.ToUInt16(data.SubArray(3, 2).ToArray(), 0) / 10;
+            Current = (float)BitConverter.ToUInt16(data.SubArray(3, 2).ToArray(), 0) / 100;
             StateBits = new StateBitsTonhe(data.SubArray(5, 3), State);
         }
         public ChargingState State { get; set; }

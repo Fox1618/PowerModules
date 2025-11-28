@@ -44,13 +44,13 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
             return data;*/
         }
 
-        protected (byte groupAddress, byte[] addresses) _getAddress(byte address)
+        protected (byte multipleAddress, byte[] addresses) _getAddress(byte address)
         {
             var pow = (uint)Math.Pow(2, address % 24 - 1);
             var bytes = BitConverter.GetBytes(pow);
-            var res = bytes.Reverse().ToArray().SubArray(1, 3);
+            //var res = bytes.ToArray().SubArray(0, 3);
             return ((byte) (address / 24),
-                BitConverter.GetBytes((uint)Math.Pow(2, address % 24 - 1)).Reverse().ToArray().SubArray(1, 3));
+                BitConverter.GetBytes((uint)Math.Pow(2, address % 24 - 1)).ToArray().SubArray(0, 3));
         }
     }
 }

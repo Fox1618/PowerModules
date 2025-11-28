@@ -10,7 +10,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
         {
             if (address != null)
             {
-                (GroupAddress, Addresses) = _getAddress(address.Value);
+                (AddressMultiple, Addresses) = _getAddress(address.Value);
             }
             CommandType = (byte) CommandCodesTonhe.ParameterSetting;
             Voltage = voltage;
@@ -19,10 +19,10 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
             Priority = 4;
         }
         public byte[] Addresses { get; set; } = { byte.MaxValue, byte.MaxValue, byte.MaxValue};
-        public byte GroupAddress { get; set; }
+        public byte AddressMultiple { get; set; }
         public float Voltage { get; set; }
         public float Current { get; set; }
-
+        public byte GroupAddress { get; set; }
         public override byte[] Data
         {
             get
@@ -32,13 +32,13 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
                 {
                     data[i] = Addresses[i];       
                 }
-                data[3] = GroupAddress;
+                data[3] = (byte)(GroupAddress << 4 | AddressMultiple);
                 var voltageBytes = BitConverter.GetBytes((ushort)(Voltage * 10)).ToArray();
                 for (var i = 0; i < voltageBytes.Length; i++)
                 {
                     data[4 + i] = voltageBytes[i];
                 }
-                var currentBytes = BitConverter.GetBytes((ushort)(Current * 10)).ToArray();
+                var currentBytes = BitConverter.GetBytes((ushort)(Current * 100)).ToArray();
                 for (var i = 0; i < currentBytes.Length; i++)
                 {
                     data[6 + i] = currentBytes[i];

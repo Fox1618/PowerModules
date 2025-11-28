@@ -20,6 +20,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
         public byte AddressMultiple { get; set; }
         public byte[] Standby { get; set; } = new byte[3];
         public bool IsStart { get; set; }
+        public byte GroupAddress { get; set; }
 
         public override byte[] Data
         {
@@ -31,7 +32,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
                     data[i] = Addresses[i];       
                 }
                 data[3] = IsStart? Constants.StartCode : Constants.StopCode;
-                data[4] = AddressMultiple;
+                data[4] = (byte)(GroupAddress << 4 | AddressMultiple);
                 for (var i = 0; i < Standby.Length; i++)
                 {
                     data[5 + i] = Standby[i];

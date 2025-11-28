@@ -32,7 +32,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Tonhe
                 }
                 data.Add(Mode);
                 data.AddRange(BitConverter.GetBytes((ushort)(Voltage * 10)));
-                data.AddRange(BitConverter.GetBytes((ushort)(Current * 10)));
+                data.AddRange(BitConverter.GetBytes((ushort)(Current * 100)));
                 data.AddRange(Standby);
                 return data.ToArray();
             }
