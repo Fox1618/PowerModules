@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Telemetria.Hardware.PowerModules.Common;
 using Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models;
 
@@ -27,8 +28,9 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Uugreen
         {
             get
             {
-                var fWord = BitConverter.GetBytes((ushort) (VoltageBattery * 10));
-                var sWord = BitConverter.GetBytes((ushort) (Voltage * 10));
+
+                var fWord = BitConverter.GetBytes((ushort) (VoltageBattery * 10)).Reverse().ToArray();
+                var sWord = BitConverter.GetBytes((ushort) (Voltage * 10)).Reverse().ToList();
                 return new[] {fWord[0], fWord[1], sWord[0], sWord[1]};
             }
         }

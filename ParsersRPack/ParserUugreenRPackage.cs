@@ -5,8 +5,6 @@ using ProgrammingWeapons.Common;
 using ProgrammingWeapons.Logging;
 using Telemetria.Hardware.PowerModules.Common;
 using Telemetria.Hardware.PowerModules.Interfaces;
-using Telemetria.Hardware.PowerModules.ReceivePackages;
-using Telemetria.Hardware.PowerModules.ReceivePackages.Tonhe;
 using Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen;
 
 
@@ -54,6 +52,8 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
                                 return new RPackUugreenPowerOn(data);
                             }
                             return new RPackUugreenShutdown(data);
+                        case CommandCodesUugreen.HiModeLoModeSelection:
+                            return new RPackUugreenSetLowOrHighVoltageMode(data);
                         default: return new RPackUugreenBase(data);
                     }
                 case MessageTypeUugreen.ReadDataResponse:
@@ -65,6 +65,8 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
                             return new RPackUugreenReadOutputCurrent(data);
                         case CommandCodesUugreen.ModuleStatus:
                             return new RPackUugreenReadStatusFlags(data);
+                        case CommandCodesUugreen.HiModeLoModeStatus:
+                            return new RPackUugreenGetLowOrHighVoltageMode(data);
                         default: return new RPackUugreenBase(data);
                     }
                 case MessageTypeUugreen.AllSetDataResponse:

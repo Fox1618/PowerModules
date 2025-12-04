@@ -10,7 +10,7 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
             Current = (float) BitConverter.ToUInt16(Reserve, 0) / 10;
             VoltageBattery = (float) BitConverter.ToUInt16(Data, 0) / 10;
             Voltage = (float) BitConverter.ToUInt16(Data, 2) / 10;
-            HiLoModeOnOff = new HiLoModeOnOffUugreen(MessageType);
+            HiLoModeOnOff = new HiLoModeOnOffUugreen(CommandType);
         }
         public float Current { get; }
         public float Voltage { get; }
