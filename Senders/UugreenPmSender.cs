@@ -9,18 +9,27 @@ using Telemetria.Hardware.PowerModules.Interfaces;
 using Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen;
 using Telemetria.Hardware.PowerModules.SendPackages.Uugreen;
 using Telemetria.Hardware.TcpDevices;
+using System.Timers;
 
 namespace Telemetria.Hardware.PowerModules.Senders
 {
     public sealed class UugreenPmSender<T> : DeviceSendingWrapper<T>, IPmSender<T> where T : IRPackPmModulesBase
     {
+        private readonly Timer _timerTiming;
+
         public UugreenPmSender(IDeviceSending deviceSending, IParserPmModulesRPackage<T> parserRPackage) : base(
             deviceSending, parserRPackage, false)
         {
+            _timerTiming = new Timer(5000) { AutoReset = true };
+            _timerTiming.Elapsed += timerTimingElapsed;
             deviceSending.IsWriteLog = false;
             ReceivedPack += OnReceivedPack;
         }
-
+        private void timerTimingElapsed(object sender, ElapsedEventArgs e)
+        {
+            var timingPack = new SPackUugreenReadStatusFlags(0);
+            _ = SendPackageAsyncBool(timingPack);
+        }
         private void OnReceivedPack(T packP)
         {
             if ((int)packP.Status <= 1) return;
@@ -123,7 +132,11 @@ namespace Telemetria.Hardware.PowerModules.Senders
         {
             if (DeviceSending is TcpDevice tcpDevice) {
                 if (tcpDevice.Connect())
+                {
                     tcpDevice.StartListen();
+                    timerTimingElapsed(null, null);
+                    _timerTiming.Start();
+                }
             }
         }
 
