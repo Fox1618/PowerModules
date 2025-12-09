@@ -100,6 +100,7 @@ namespace Telemetria.Hardware.PowerModules.Senders
         public async Task<(float voltage, float current)?> GetVoltageCurrent(byte address)
         {
             var packState = await getCurrentState(address);
+            if (packState == null) return null;
             return (packState.State.Voltage, packState.State.Current);
         }
 
