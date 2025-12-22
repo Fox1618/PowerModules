@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models;
 
 namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
@@ -7,9 +8,9 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
     {
         public RPackUugreenAllSetData(byte[] data) : base(data)
         {
-            Current = (float) BitConverter.ToUInt16(Reserve, 0) / 10;
-            VoltageBattery = (float) BitConverter.ToUInt16(Data, 0) / 10;
-            Voltage = (float) BitConverter.ToUInt16(Data, 2) / 10;
+            Current = (float) BitConverter.ToUInt16(Reserve.Reverse().ToArray(), 0) / 10;
+            VoltageBattery = (float) BitConverter.ToUInt16(Data.Reverse().ToArray(), 0) / 10;
+            Voltage = (float) BitConverter.ToUInt16(Data.Reverse().ToArray(), 2) / 10;
             HiLoModeOnOff = new HiLoModeOnOffUugreen(CommandType);
         }
         public float Current { get; }

@@ -7,17 +7,16 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Uugreen
 {
     public class SPackUugreenAllSetData : SPackUugreenBase
     {
-        public SPackUugreenAllSetData(byte moduleAddress, float current, float batteryVoltage, float voltage, HiLoModeOnOffUugreen mode = null)
+        public SPackUugreenAllSetData(byte moduleAddress, float voltage, float batteryVoltage, float current, HiLoModeOnOffUugreen mode = null)
         {
             MessageType = (byte) MessageTypeUugreen.AllSetData;
-            CommandType = (byte) CommandCodesUugreen.Vout;
+            CommandType = mode?.ToByte() ?? 0;
             MonitorAddress = 1;
             ModuleAddress = moduleAddress;
             Current = current;
             VoltageBattery = batteryVoltage;
             Voltage = voltage;
-            Reserve = BitConverter.GetBytes((ushort) (Current * 10));
-            MessageType = mode?.ToByte() ?? 0;
+            Reserve = BitConverter.GetBytes((ushort) (Current * 10)).Reverse().ToArray();
         }
 
         public float Current { get; }

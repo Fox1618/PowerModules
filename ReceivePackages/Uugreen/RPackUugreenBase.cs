@@ -51,7 +51,8 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen
                 pack.MessageType != (byte)MessageTypeUugreen.SetDataResponse) return Status;
             if (MessageType == (byte) MessageTypeUugreen.ReadDataResponse &&
                 pack.MessageType != (byte) MessageTypeUugreen.ReadData) return Status;
-
+            if (MessageType == (byte) MessageTypeUugreen.AllSetDataResponse &&
+                pack.MessageType != (byte) MessageTypeUugreen.AllSetData) return Status;
             return Status = StatusPack.Success;
         }
     }

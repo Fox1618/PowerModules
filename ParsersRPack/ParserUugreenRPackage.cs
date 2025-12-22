@@ -70,11 +70,9 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
                         default: return new RPackUugreenBase(data);
                     }
                 case MessageTypeUugreen.AllSetDataResponse:
-                    if (cmdType == CommandCodesUugreen.Vout)
                         return new RPackUugreenAllSetData(data);
-                    break;
+                default: return new RPackUugreenBase(data);
             }
-            return new RPackUugreenBase(data);
         }
     }
 }

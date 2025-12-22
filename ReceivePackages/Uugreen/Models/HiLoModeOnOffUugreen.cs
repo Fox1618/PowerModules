@@ -1,13 +1,14 @@
 ﻿namespace Telemetria.Hardware.PowerModules.ReceivePackages.Uugreen.Models
 {
-    public enum HiLoModeUugreen
+    public enum HiLoModeUugreen : uint
     {
         NoSelection = 0,
+        HiModeSingleCmd = 1,
         HiMode = 2,
         Low = 3
     }
 
-    public enum OnOffModeUugreen
+    public enum OnOffModeUugreen 
     {
         TurnOnP = 0,
         ShutDownDcNotPfc = 1,
@@ -17,17 +18,19 @@
     }
     public class HiLoModeOnOffUugreen
     {
+        public HiLoModeOnOffUugreen() { }
         public HiLoModeOnOffUugreen(byte data)
         {
-            HiLoMode = (HiLoModeUugreen)Helper.GetBits(data, 6, 2);
+            HiLoMode = (HiLoModeUugreen)Helper.GetBits(data, 7, 2);
             OnOffMode = (OnOffModeUugreen)Helper.GetBits(data, 1, 2);
         }
         public HiLoModeUugreen HiLoMode { get; set; }
         public OnOffModeUugreen OnOffMode { get; set; }
+        public byte Reserved { get; set; }
 
         public byte ToByte()
         {
-            return (byte)(Helper.GetBits((byte) HiLoMode, 1, 2) << 6 | Helper.GetBits((byte) OnOffMode, 1, 2));
+            return (byte)(Helper.GetBits((byte) HiLoMode, 1, 2) << 6 | Helper.GetBits(Reserved, 0, 4) << 2 | Helper.GetBits((byte) OnOffMode, 1, 2));
         }
     }
 }
