@@ -26,7 +26,7 @@
         }
         public HiLoModeUugreen HiLoMode { get; set; }
         public OnOffModeUugreen OnOffMode { get; set; }
-        public byte Reserved { get; set; }
+        public byte Reserved { get; set; } = 0;
 
         public byte ToByte()
         {

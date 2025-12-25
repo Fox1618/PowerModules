@@ -17,7 +17,7 @@ namespace Telemetria.Hardware.PowerModules.Senders
     public sealed class UugreenPmSender<T> : DeviceSendingWrapper<T>, IPmSender<T> where T : IRPackPmModulesBase
     {
         private readonly Timer _timerTiming;
-
+        private bool _isPauseTiming;
         public UugreenPmSender(IDeviceSending deviceSending, IParserPmModulesRPackage<T> parserRPackage) : base(
             deviceSending, parserRPackage, false)
         {
@@ -28,6 +28,7 @@ namespace Telemetria.Hardware.PowerModules.Senders
         }
         private void timerTimingElapsed(object sender, ElapsedEventArgs e)
         {
+            if(_isPauseTiming) return;
             var timingPack = new SPackUugreenReadStatusFlags(0);
             _ = SendPackageAsyncBool(timingPack);
         }
@@ -107,13 +108,38 @@ namespace Telemetria.Hardware.PowerModules.Senders
             var currentP = current ?? 0f;
             var hiLowMode = voltage > 500 ? HiLoModeUugreen.HiMode : HiLoModeUugreen.Low;
             var onOffMode = isStart ? OnOffModeUugreen.TurnOnDcPfc: OnOffModeUugreen.ShutDownDcPfc;
-            var mode = new HiLoModeOnOffUugreen { HiLoMode = hiLowMode, OnOffMode = onOffMode};
+            var mode = new HiLoModeOnOffUugreen { HiLoMode = hiLowMode, OnOffMode = onOffMode };
             var sPackSpec = new SPackUugreenAllSetData(address, voltageP, voltageP, currentP, mode);
+            if (isStart)
+            {
+                var packGetMode = new SPackUugreenGetLowOrHighVoltageMode(address);
+                var resGetMode = await SendPackageAsyncBool(packGetMode);
+                if (!resGetMode.Result || !(resGetMode.Pack is RPackUugreenGetLowOrHighVoltageMode rPackGetMode)) return false;
+
+                if (rPackGetMode.Mode == 1 &&  hiLowMode != HiLoModeUugreen.HiMode ||
+                    rPackGetMode.Mode == 2 && hiLowMode != HiLoModeUugreen.Low)
+                {
+                    var resSpec1 = await SendPackageAsyncBool(sPackSpec);
+                    if (!resSpec1.Result || !(resSpec1.Pack is RPackUugreenAllSetData rSetAllData1) ||
+                        Math.Abs(rSetAllData1.Current - currentP) > 0.1 || rSetAllData1.Voltage - voltageP > 0.1) return false;
+                    await Task.Delay(500);
+                    /*var sPackShutdown = new SPackUugreenShutdown(address);
+                    var rPackShutdown = await SendPackageAsyncBool(sPackShutdown);
+                    if (rPackShutdown.Result)
+                        await Task.Delay(2500);
+                    else
+                    {
+                        return false;
+                    }*/
+                }
+            }
             var resSpec = await SendPackageAsyncBool(sPackSpec);
             if (!resSpec.Result || !(resSpec.Pack is RPackUugreenAllSetData rSetAllData) ||
                 Math.Abs(rSetAllData.Current - currentP) > 0.1 || rSetAllData.Voltage - voltageP > 0.1) return false;
             return true;
         }
+
+   
         public async Task<bool> SetVoltageAndCurrent(byte address, float voltage, float current)
         {
             var sPackCurrent = new SPackUugreenSetCurrentLimit(current, address);
