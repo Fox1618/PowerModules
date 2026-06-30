@@ -33,8 +33,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ninject, Version=3.3.6.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Ninject.3.3.6\lib\net45\Ninject.dll</HintPath>
+    <Reference Include="Hardware.DeviceSending">
+      <HintPath>..\ChargerPowerModules\ddls\Hardware.DeviceSending.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\ChargerPowerModules\packages\Ninject.3.3.6\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="ProgrammingWeapons">
+      <HintPath>..\ChargerPowerModules\ddls\ProgrammingWeapons.dll</HintPath>
+    </Reference>
+    <Reference Include="ProgrammingWeapons.Common">
+      <HintPath>..\ChargerPowerModules\ddls\ProgrammingWeapons.Common.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,6 +53,18 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Telemetria.Common">
+      <HintPath>..\ChargerPowerModules\ddls\Telemetria.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Telemetria.Core">
+      <HintPath>..\ChargerPowerModules\ddls\Telemetria.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telemetria.Hardware.Charger">
+      <HintPath>..\..\..\Telemetria.Net.3.0\bin\Release\Telemetria.Hardware.Charger.dll</HintPath>
+    </Reference>
+    <Reference Include="Telemetria.Hardware.TcpDevices">
+      <HintPath>..\..\..\Telemetria.Net.3.0\bin\Release\Telemetria.Hardware.TcpDevices.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CommandCodesUugreen.cs" />
@@ -114,36 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\ProgrammingWeapons\Common\ProgrammingWeapons.Common.csproj">
-      <Project>{98565C84-9729-4EDB-95CB-D0471F87D80B}</Project>
-      <Name>ProgrammingWeapons.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ProgrammingWeapons\Core\ProgrammingWeapons.Core.csproj">
-      <Project>{916ED7F8-C82F-40A8-BEED-8AB065642C90}</Project>
-      <Name>ProgrammingWeapons.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Common\Common.csproj">
-      <Project>{79AE51F5-9920-41B8-A22A-3E307470B729}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Core\Core.csproj">
-      <Project>{7B041F4D-35FA-433B-8064-740159C0F9DC}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Charger\Hardware.Charger.csproj">
-      <Project>{20596EEB-E8C5-4BBB-AE43-05EA2770AA8C}</Project>
-      <Name>Hardware.Charger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DeviceSending\Hardware.DeviceSending.csproj">
-      <Project>{68BE2451-DD71-402D-BDDB-01F69DDAD75A}</Project>
-      <Name>Hardware.DeviceSending</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TcpDevice\Hardware.TcpDevices.csproj">
-      <Project>{F21441D9-D70E-4D17-B163-961E9D77FCD8}</Project>
-      <Name>Hardware.TcpDevices</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
