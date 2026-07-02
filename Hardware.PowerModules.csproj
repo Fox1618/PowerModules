@@ -108,6 +108,16 @@
     <Compile Include="ReceivePackages\RPackPmModulesBase.cs" />
     <Compile Include="SendPackages\SPackPModulesBase.cs" />
     <Compile Include="SendPackages\SPackPmModulesOuterUsr.cs" />
+    <Compile Include="SendPackages\Megmeet\MegmeetCommands.cs" />
+    <Compile Include="SendPackages\Megmeet\MegmeetMode.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetBase.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetPowerControl.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetReadCurrent.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetReadStatus.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetReadVoltage.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetSetCurrent.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetSetMode.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetSetVoltage.cs" />
     <Compile Include="SendPackages\Tonhe\Constants.cs" />
     <Compile Include="SendPackages\Tonhe\SPackTonheBase.cs" />
     <Compile Include="SendPackages\Tonhe\SPackTonheParamSetting.cs" />
