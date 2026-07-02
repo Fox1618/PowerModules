@@ -36,8 +36,8 @@
     <Reference Include="Hardware.DeviceSending">
       <HintPath>..\ChargerPowerModules\ddls\Hardware.DeviceSending.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\ChargerPowerModules\packages\Ninject.3.3.6\lib\net45\Ninject.dll</HintPath>
+    <Reference Include="Ninject, Version=3.3.6.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.6\lib\net45\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="ProgrammingWeapons">
       <HintPath>..\ChargerPowerModules\ddls\ProgrammingWeapons.dll</HintPath>
@@ -104,6 +104,7 @@
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetOutputVoltageRef.cs" />
     <Compile Include="Senders\UugreenPmSender.cs" />
     <Compile Include="Senders\PmTonheSender.cs" />
+    <Compile Include="Senders\MegmeetPmSender.cs" />
     <Compile Include="ReceivePackages\RPackPmModulesBase.cs" />
     <Compile Include="SendPackages\SPackPModulesBase.cs" />
     <Compile Include="SendPackages\SPackPmModulesOuterUsr.cs" />
