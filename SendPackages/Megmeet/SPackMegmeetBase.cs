@@ -5,12 +5,12 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
 {
     public abstract class SPackMegmeetBase : SPackPModulesBase
     {
-        private const uint ProtocolNo = 0x060;
-        private const byte MonitorAddressDefault = 0xF0;
-        private const byte BroadcastAddress = 0xFF;
-        private const byte RequestSingleData = 0x01;
-        private const byte NoError = 0xF0;
-        private const int CoefAv = 1000;
+        public const uint ProtocolNo = 0x060;
+        public const byte MonitorAddressDefault = 0xF0;
+        public const byte BroadcastAddress = 0xFF;
+        public const byte RequestSingleData = 0x01;
+        public const byte NoError = 0xF0;
+        public const int COEF_AV = 1000;
 
         protected SPackMegmeetBase(byte moduleAddress, ushort command)
         {
@@ -42,7 +42,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
 
         protected void SetFloatValue(float value)
         {
-            SetUInt32Value((uint)(value * CoefAv));
+            SetUInt32Value((uint)(value * COEF_AV));
         }
 
         protected void SetUInt16Value(ushort value)

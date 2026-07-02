@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using System.Timers;
 using Hardware.DeviceSending;
@@ -6,6 +7,7 @@ using ProgrammingWeapons;
 using ProgrammingWeapons.Logging;
 using Telemetria.Hardware.PowerModules.Common;
 using Telemetria.Hardware.PowerModules.Interfaces;
+using Telemetria.Hardware.PowerModules.ReceivePackages.Megmeet;
 using Telemetria.Hardware.PowerModules.SendPackages.Megmeet;
 using Telemetria.Hardware.TcpDevices;
 using Timer = System.Timers.Timer;
@@ -54,7 +56,7 @@ namespace Telemetria.Hardware.PowerModules.Senders
                         ? new SPackMegmeetSetMode(address, MegmeetMode.High)
                         : new SPackMegmeetSetMode(address, MegmeetMode.Low);
                     var modeRes = await SendPackageAsyncBool(modePack);
-                    if (!modeRes.Result) return false;
+                    if (!modeRes.Result || !(modeRes.Pack is RPackMegmeetSetMode rSetMode) || rSetMode.Mode != modePack.Mode) return false;
                 }
 
                 if (voltage.HasValue && current.HasValue)
@@ -68,39 +70,41 @@ namespace Telemetria.Hardware.PowerModules.Senders
 
             var sPack = new SPackMegmeetPowerControl(address, isStart);
             var res = await SendPackageAsyncBool(sPack);
-            return res.Result;
+            return res.Result && res.Pack is RPackMegmeetPowerControl rPowerControl && rPowerControl.IsStart == isStart;
         }
 
         public async Task<bool> SetVoltageAndCurrent(byte address, float voltage, float current)
         {
             var voltagePack = new SPackMegmeetSetVoltage(address, voltage);
             var voltageRes = await SendPackageAsyncBool(voltagePack);
-            if (!voltageRes.Result) return false;
+            if (!voltageRes.Result || !(voltageRes.Pack is RPackMegmeetSetVoltage rSetVoltage) ||
+                Math.Abs(rSetVoltage.Voltage - voltage) > 0.1) return false;
 
             var currentPack = new SPackMegmeetSetCurrent(address, current);
             var currentRes = await SendPackageAsyncBool(currentPack);
-            return currentRes.Result;
+            return currentRes.Result && currentRes.Pack is RPackMegmeetSetCurrent rSetCurrent &&
+                   Math.Abs(rSetCurrent.Current - current) <= 0.1;
         }
 
         public async Task<(float voltage, float current)?> GetVoltageCurrent(byte address)
         {
             var voltagePack = new SPackMegmeetReadVoltage(address);
             var voltageRes = await SendPackageAsyncBool(voltagePack);
-            if (!voltageRes.Result || !(voltageRes.Pack is T rVoltage)) return null;
+            if (!voltageRes.Result || !(voltageRes.Pack is RPackMegmeetReadVoltage rVoltage)) return null;
 
             var currentPack = new SPackMegmeetReadCurrent(address);
             var currentRes = await SendPackageAsyncBool(currentPack);
-            if (!currentRes.Result || !(currentRes.Pack is T rCurrent)) return null;
+            if (!currentRes.Result || !(currentRes.Pack is RPackMegmeetReadCurrent rCurrent)) return null;
 
-            return (readValue(rVoltage), readValue(rCurrent));
+            return (rVoltage.Voltage, rCurrent.Current);
         }
 
         public async Task<StateBase> GetStatus(byte address)
         {
             var statusPack = new SPackMegmeetReadStatus(address);
             var statusRes = await SendPackageAsyncBool(statusPack);
-            if (!statusRes.Result || !(statusRes.Pack is T rStatus) || rStatus.Data == null || rStatus.Data.Length < 4) return null;
-            return new StateBase(rStatus.Data);
+            if (!statusRes.Result || !(statusRes.Pack is RPackMegmeetReadStatus rStatus)) return null;
+            return rStatus.State;
         }
 
         public void Start()
@@ -133,18 +137,5 @@ namespace Telemetria.Hardware.PowerModules.Senders
             return new PmInfo { Voltage = voltCurrent.Value.voltage, Current = voltCurrent.Value.current, State = state };
         }
 
-        private float readValue(T pack)
-        {
-            if (pack.Data == null || pack.Data.Length < 8) return 0;
-            return readUInt32(pack.Data, 4) * 0.001f;
-        }
-
-        private uint readUInt32(byte[] data, int startIndex)
-        {
-            return (uint)(data[startIndex] << 24 |
-                          data[startIndex + 1] << 16 |
-                          data[startIndex + 2] << 8 |
-                          data[startIndex + 3]);
-        }
     }
 }

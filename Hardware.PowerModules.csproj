@@ -78,6 +78,7 @@
     <Compile Include="ParsersRPack\ParserOuterPackPmModules.cs" />
     <Compile Include="ParsersRPack\ParserUugreenRPackage.cs" />
     <Compile Include="ParsersRPack\ParserTonheRPackage.cs" />
+    <Compile Include="ParsersRPack\ParserMegmeetRPackage.cs" />
     <Compile Include="ParsersRPack\ParserPmModulesBase.cs" />
     <Compile Include="PowerModulesNinjectModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,6 +103,14 @@
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenReadOutputVoltage.cs" />
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetCurrentLimit.cs" />
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetOutputVoltageRef.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetBase.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetPowerControl.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetReadCurrent.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetReadStatus.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetReadVoltage.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetSetCurrent.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetSetMode.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetSetVoltage.cs" />
     <Compile Include="Senders\UugreenPmSender.cs" />
     <Compile Include="Senders\PmTonheSender.cs" />
     <Compile Include="Senders\MegmeetPmSender.cs" />
