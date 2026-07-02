@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Telemetria.Hardware.PowerModules.Common;
 
 namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
@@ -30,14 +31,17 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
 
         public override byte[] ToByte()
         {
-            var result = new byte[12];
+            var result = new List<byte>();
+            if (Prefix != null)
+                result.Add(Prefix.Value);
+
             var canId = getCanId();
-            result[0] = (byte)(canId >> 24);
-            result[1] = (byte)(canId >> 16);
-            result[2] = (byte)(canId >> 8);
-            result[3] = (byte)canId;
-            Array.Copy(Data, 0, result, 4, Data.Length);
-            return result;
+            result.Add((byte)(canId >> 24));
+            result.Add((byte)(canId >> 16));
+            result.Add((byte)(canId >> 8));
+            result.Add((byte)canId);
+            result.AddRange(Data);
+            return result.ToArray();
         }
 
         protected void SetFloatValue(float value)
