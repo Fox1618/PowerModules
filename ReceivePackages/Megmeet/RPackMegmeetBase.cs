@@ -46,7 +46,8 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Megmeet
             if (ProtocolNo != SPackMegmeetBase.ProtocolNo) return Status;
             if (MessageType != SPackMegmeetBase.RequestSingleData) return Status;
             if (Command != pack.Command) return Status;
-            if (pack.ModuleAddress != SPackMegmeetBase.BroadcastAddress && ModuleAddress != pack.ModuleAddress) return Status;
+            if (pack.ModuleAddress != SPackMegmeetBase.BroadcastAddress &&
+                ModuleAddress != pack.ModuleAddress) return Status;
             if (ErrorType != SPackMegmeetBase.NoError) return Status = StatusPack.Fail;
             return Status = StatusPack.Success;
         }
