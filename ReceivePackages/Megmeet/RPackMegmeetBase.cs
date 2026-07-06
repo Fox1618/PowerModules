@@ -44,7 +44,6 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Megmeet
             Status = StatusPack.Unfit;
             if (!(sendPack is SPackMegmeetBase pack)) return Status = StatusPack.Undefined;
             if (ProtocolNo != SPackMegmeetBase.ProtocolNo) return Status;
-            if (MessageType != SPackMegmeetBase.RequestSingleData) return Status;
             if (Command != pack.Command) return Status;
             if (pack.ModuleAddress != SPackMegmeetBase.BroadcastAddress &&
                 ModuleAddress != pack.ModuleAddress) return Status;

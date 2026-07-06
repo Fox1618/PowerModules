@@ -20,9 +20,10 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
             ModuleAddress = moduleAddress;
             Command = command;
             CommandType = (byte)(command & 0xFF);
+
             Data = new byte[8];
-            Data[0] = RequestSingleData;
-            Data[1] = NoError;
+            Data[0] = (moduleAddress == BroadcastAddress) ? (byte)0x03 : RequestSingleData;
+            Data[1] = (moduleAddress == BroadcastAddress) ? (byte)0x00 : moduleAddress;
             Data[2] = (byte)(command >> 8);
             Data[3] = (byte)command;
         }
@@ -41,12 +42,26 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
             result.Add((byte)(canId >> 8));
             result.Add((byte)canId);
             result.AddRange(Data);
+
+
             return result.ToArray();
+        }
+
+        private uint getCanId()
+        {
+            return (ProtocolNo << 20) |
+                   (1u << 19) |
+                   ((uint)ModuleAddress << 11) |
+                   ((uint)MonitorAddress << 3) |
+                   0x03;
         }
 
         protected void SetFloatValue(float value)
         {
-            SetUInt32Value((uint)(value * COEF_AV));
+            byte[] bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+            Array.Copy(bytes, 0, Data, 4, 4);
         }
 
         protected void SetUInt16Value(ushort value)
@@ -61,15 +76,6 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
             Data[5] = (byte)(value >> 16);
             Data[6] = (byte)(value >> 8);
             Data[7] = (byte)value;
-        }
-
-        private uint getCanId()
-        {
-            return (ProtocolNo << 20) |
-                   (1u << 19) |
-                   ((uint)ModuleAddress << 11) |
-                   ((uint)MonitorAddress << 3) |
-                   0x03;
         }
     }
 }

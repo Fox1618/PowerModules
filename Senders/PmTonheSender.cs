@@ -114,12 +114,22 @@ namespace Telemetria.Hardware.PowerModules.Senders
         {
             if (DeviceSending is TcpDevice tcpDevice)
             {
+                Log.Info($"Tonhe: Попытка подключения к TCP устройству...");
                 if (tcpDevice.Connect())
                 {
+                    Log.Info($"Tonhe: TCP подключение успешно установлено");
                     tcpDevice.StartListen();
                     timerTimingElapsed(null, null);
                     _timerTiming.Start();
                 }
+                else
+                {
+                    Log.Error($"Tonhe: Не удалось подключиться к TCP устройству. Проверьте IP адрес и порт.");
+                }
+            }
+            else
+            {
+                Log.Error($"Tonhe: DeviceSending не является TcpDevice");
             }
         }
 

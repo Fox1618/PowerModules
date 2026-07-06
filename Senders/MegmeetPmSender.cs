@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Timers;
 using Hardware.DeviceSending;
@@ -18,6 +19,7 @@ namespace Telemetria.Hardware.PowerModules.Senders
     {
         private readonly Timer _timerTiming;
 
+        private byte _activeAddress = 1;
         public MegmeetPmSender(IDeviceSending deviceSending, IParserPmModulesRPackage<T> parserRPackage) : base(
             deviceSending, parserRPackage, false)
         {
@@ -29,14 +31,13 @@ namespace Telemetria.Hardware.PowerModules.Senders
 
         private void timerTimingElapsed(object sender, ElapsedEventArgs e)
         {
-            var timingPack = new SPackMegmeetReadStatus(0xFF);
+            var timingPack = new SPackMegmeetReadStatus(_activeAddress);
             _ = SendPackageAsyncBool(timingPack);
         }
 
         private void onReceivedPack(T packP)
         {
             if ((int)packP.Status <= 1) return;
-            Log.Info(JsonHelper.ReplaceBrackets(JsonHelper.SerializeObject(packP)));
         }
 
         public async Task<bool> PowerOnOffAll(bool isStart)
@@ -55,14 +56,22 @@ namespace Telemetria.Hardware.PowerModules.Senders
                     var modePack = voltage.Value > 500
                         ? new SPackMegmeetSetMode(address, MegmeetMode.High)
                         : new SPackMegmeetSetMode(address, MegmeetMode.Low);
-                    var modeRes = await SendPackageAsyncBool(modePack);
-                    if (!modeRes.Result || !(modeRes.Pack is RPackMegmeetSetMode rSetMode) || rSetMode.Mode != modePack.Mode) return false;
+
+                    var modeRes = await SendPackageAsyncBool((ISPackBase)modePack);
+
+                    if (!modeRes.Result || !(modeRes.Pack is RPackMegmeetSetMode rSetMode) || rSetMode.Mode != modePack.Mode)
+                    {
+                        return false;
+                    }
                 }
 
                 if (voltage.HasValue && current.HasValue)
                 {
                     var setRes = await SetVoltageAndCurrent(address, voltage.Value, current.Value);
-                    if (!setRes) return false;
+                    if (!setRes)
+                    {
+                        return false;
+                    }
                 }
 
                 await Task.Delay(300);
@@ -70,31 +79,36 @@ namespace Telemetria.Hardware.PowerModules.Senders
 
             var sPack = new SPackMegmeetPowerControl(address, isStart);
             var res = await SendPackageAsyncBool(sPack);
-            return res.Result && res.Pack is RPackMegmeetPowerControl rPowerControl && rPowerControl.IsStart == isStart;
+            var result = res.Result && res.Pack is RPackMegmeetPowerControl rPowerControl && rPowerControl.IsStart == isStart;
+            return result;
         }
 
         public async Task<bool> SetVoltageAndCurrent(byte address, float voltage, float current)
         {
-            var voltagePack = new SPackMegmeetSetVoltage(address, voltage);
-            var voltageRes = await SendPackageAsyncBool(voltagePack);
-            if (!voltageRes.Result || !(voltageRes.Pack is RPackMegmeetSetVoltage rSetVoltage) ||
-                Math.Abs(rSetVoltage.Voltage - voltage) > 0.1) return false;
+            _activeAddress = address; 
+            var voltPack = new MegmeetFloatPack(address, MegmeetCommands.VoltageSetFloat, voltage);
+            var currPack = new MegmeetFloatPack(address, MegmeetCommands.CurrentSetFloat, current);
 
-            var currentPack = new SPackMegmeetSetCurrent(address, current);
-            var currentRes = await SendPackageAsyncBool(currentPack);
-            return currentRes.Result && currentRes.Pack is RPackMegmeetSetCurrent rSetCurrent &&
-                   Math.Abs(rSetCurrent.Current - current) <= 0.1;
+            var resV = await SendPackageAsyncBool((ISPackBase)voltPack);
+            var resC = await SendPackageAsyncBool((ISPackBase)currPack);
+
+            return resV.Result && resC.Result;
         }
-
         public async Task<(float voltage, float current)?> GetVoltageCurrent(byte address)
         {
             var voltagePack = new SPackMegmeetReadVoltage(address);
             var voltageRes = await SendPackageAsyncBool(voltagePack);
-            if (!voltageRes.Result || !(voltageRes.Pack is RPackMegmeetReadVoltage rVoltage)) return null;
+            if (!voltageRes.Result || !(voltageRes.Pack is RPackMegmeetReadVoltage rVoltage))
+            {
+                return null;
+            }
 
             var currentPack = new SPackMegmeetReadCurrent(address);
             var currentRes = await SendPackageAsyncBool(currentPack);
-            if (!currentRes.Result || !(currentRes.Pack is RPackMegmeetReadCurrent rCurrent)) return null;
+            if (!currentRes.Result || !(currentRes.Pack is RPackMegmeetReadCurrent rCurrent))
+            {
+                return null;
+            }
 
             return (rVoltage.Voltage, rCurrent.Current);
         }
@@ -103,7 +117,10 @@ namespace Telemetria.Hardware.PowerModules.Senders
         {
             var statusPack = new SPackMegmeetReadStatus(address);
             var statusRes = await SendPackageAsyncBool(statusPack);
-            if (!statusRes.Result || !(statusRes.Pack is RPackMegmeetReadStatus rStatus)) return null;
+            if (!statusRes.Result || !(statusRes.Pack is RPackMegmeetReadStatus rStatus))
+            {
+                return null;
+            }
             return rStatus.State;
         }
 
@@ -113,6 +130,7 @@ namespace Telemetria.Hardware.PowerModules.Senders
             {
                 if (tcpDevice.Connect())
                 {
+                    Debug.WriteLine($"[Megmeet] TCP подключение успешно установлено");
                     tcpDevice.StartListen();
                     timerTimingElapsed(null, null);
                     _timerTiming.Start();
@@ -131,11 +149,38 @@ namespace Telemetria.Hardware.PowerModules.Senders
 
         public async Task<PmInfo> GetVoltageCurrentAndStatus(byte address)
         {
+            _activeAddress = address;
+            
             var voltCurrent = await GetVoltageCurrent(address);
-            if (voltCurrent == null) return null;
+            if (voltCurrent == null)
+            {
+                return null;
+            }
+            
             var state = await GetStatus(address);
+            if (state == null)
+            {
+                return null;
+            }
+            
             return new PmInfo { Voltage = voltCurrent.Value.voltage, Current = voltCurrent.Value.current, State = state };
         }
 
+    }
+    internal class MegmeetFloatPack : SPackMegmeetBase
+    {
+        public MegmeetFloatPack(byte moduleAddress, ushort command, float value)
+            : base(moduleAddress, command)
+        {
+            SetFloatValue(value);
+        }
+    }
+    internal class MegmeetUintPack : SPackMegmeetBase
+    {
+        public MegmeetUintPack(byte moduleAddress, ushort command, uint value)
+            : base(moduleAddress, command)
+        {
+            SetUInt32Value(value);
+        }
     }
 }
