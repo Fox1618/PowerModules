@@ -38,21 +38,21 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
 
             switch (command)
             {
-                case MegmeetCommands.PowerControl:
+                case (ushort)CommandCodesMegmeet.PowerControl:
                     return new RPackMegmeetPowerControl(data);
-                case MegmeetCommands.VoltageSet:
-                case MegmeetCommands.VoltageSetFloat:
+                case (ushort)CommandCodesMegmeet.VoltageSet:
+                case (ushort)CommandCodesMegmeet.VoltageSetFloat:
                     return new RPackMegmeetSetVoltage(data);
-                case MegmeetCommands.CurrentSet:
-                case MegmeetCommands.CurrentSetFloat:
+                case (ushort)CommandCodesMegmeet.CurrentSet:
+                case (ushort)CommandCodesMegmeet.CurrentSetFloat:
                     return new RPackMegmeetSetCurrent(data);
-                case MegmeetCommands.ModeSet:
+                case (ushort)CommandCodesMegmeet.ModeSet:
                     return new RPackMegmeetSetMode(data);
-                case MegmeetCommands.StatusRead:
+                case (ushort)CommandCodesMegmeet.StatusRead:
                     return new RPackMegmeetReadStatus(data);
-                case MegmeetCommands.VoltageRead:
+                case (ushort)CommandCodesMegmeet.VoltageRead:
                     return new RPackMegmeetReadVoltage(data);
-                case MegmeetCommands.CurrentRead:
+                case (ushort)CommandCodesMegmeet.CurrentRead:
                     return new RPackMegmeetReadCurrent(data);
                 default:
                     return new RPackMegmeetBase(data);

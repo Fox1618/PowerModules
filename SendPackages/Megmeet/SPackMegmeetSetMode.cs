@@ -1,8 +1,10 @@
+using Telemetria.Hardware.PowerModules.Common;
+
 namespace Telemetria.Hardware.PowerModules.SendPackages.Megmeet
 {
     public sealed class SPackMegmeetSetMode : SPackMegmeetBase
     {
-        public SPackMegmeetSetMode(byte moduleAddress, MegmeetMode mode) : base(moduleAddress, MegmeetCommands.ModeSet)
+        public SPackMegmeetSetMode(byte moduleAddress, MegmeetMode mode) : base(moduleAddress, (ushort)CommandCodesMegmeet.ModeSet)
         {
             Mode = mode;
             SetUInt16Value(getModeValue(mode));

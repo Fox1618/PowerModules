@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CommandCodesUugreen.cs" />
+    <Compile Include="Common\CommandCodesMegmeet.cs" />
     <Compile Include="Common\PackInterfaces.cs" />
     <Compile Include="Common\PmInfo.cs" />
     <Compile Include="Common\StateAttribute.cs" />
@@ -117,7 +118,6 @@
     <Compile Include="ReceivePackages\RPackPmModulesBase.cs" />
     <Compile Include="SendPackages\SPackPModulesBase.cs" />
     <Compile Include="SendPackages\SPackPmModulesOuterUsr.cs" />
-    <Compile Include="SendPackages\Megmeet\MegmeetCommands.cs" />
     <Compile Include="SendPackages\Megmeet\MegmeetMode.cs" />
     <Compile Include="SendPackages\Megmeet\SPackMegmeetBase.cs" />
     <Compile Include="SendPackages\Megmeet\SPackMegmeetPowerControl.cs" />

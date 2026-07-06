@@ -86,8 +86,8 @@ namespace Telemetria.Hardware.PowerModules.Senders
         public async Task<bool> SetVoltageAndCurrent(byte address, float voltage, float current)
         {
             _activeAddress = address; 
-            var voltPack = new MegmeetFloatPack(address, MegmeetCommands.VoltageSetFloat, voltage);
-            var currPack = new MegmeetFloatPack(address, MegmeetCommands.CurrentSetFloat, current);
+            var voltPack = new MegmeetFloatPack(address, (ushort)CommandCodesMegmeet.VoltageSetFloat, voltage);
+            var currPack = new MegmeetFloatPack(address, (ushort)CommandCodesMegmeet.CurrentSetFloat, current);
 
             var resV = await SendPackageAsyncBool((ISPackBase)voltPack);
             var resC = await SendPackageAsyncBool((ISPackBase)currPack);
