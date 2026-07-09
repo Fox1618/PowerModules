@@ -1,11 +1,8 @@
+using System.Diagnostics;
+using Telemetria.Hardware.PowerModules.SendPackages.Sinexcel;
+
 namespace Telemetria.Hardware.PowerModules.ReceivePackages.Sinexcel
 {
-    public enum SinexcelMode
-    {
-        Low,
-        High
-    }
-
     public class RPackSinexcelSetMode : RPackSinexcelBase
     {
         public RPackSinexcelSetMode(byte[] data) : base(data)
@@ -21,10 +18,11 @@ namespace Telemetria.Hardware.PowerModules.ReceivePackages.Sinexcel
             {
                 case 0x5555:
                     return SinexcelMode.Low;
-                case 0xaaaa:
+                case 0xAAAA:
                     return SinexcelMode.High;
                 default:
-                    return SinexcelMode.High;
+                    Debug.WriteLine($"[Sinexcel] Mode is incorrect: {value:X4}");
+                    return SinexcelMode.Unknown;
             }
         }
     }

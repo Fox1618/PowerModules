@@ -2,6 +2,7 @@
 using ProgrammingWeapons.Common;
 using ProgrammingWeapons.Logging;
 using System;
+using System.Diagnostics;
 using Telemetria.Hardware.PowerModules.Common;
 using Telemetria.Hardware.PowerModules.Interfaces;
 using Telemetria.Hardware.PowerModules.ReceivePackages.Sinexcel;
@@ -33,6 +34,12 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
 
         private IRPackPmModulesBase getPack(byte[] data, ISPackBase packS = null)
         {
+            if (data == null || data.Length < 4)
+            {
+                Debug.WriteLine($"[Sinexcel] data in package is null or <4. (Parser)");
+                Log.Warn("Sinexcel parser: Inner data is null or too short to read Command ID.");
+                return new RPackSinexcelBase(data ?? new byte[0]);
+            }
             ushort command = (ushort)((data[2] << 8) | data[3]);
             Log.Info("CmdCode: " + command.ToString("x4"));
 
@@ -58,6 +65,9 @@ namespace Telemetria.Hardware.PowerModules.ParsersRPack
                 case (ushort)CommandCodesSinexcel.PowerControlLow:
                 case (ushort)CommandCodesSinexcel.PowerControlHigh:
                     return new RPackSinexcelPowerControl(data);
+
+                case (ushort)CommandCodesSinexcel.SetVoltageMode:
+                    return new RPackSinexcelSetMode(data);
 
                 default:
                     return new RPackSinexcelBase(data);
