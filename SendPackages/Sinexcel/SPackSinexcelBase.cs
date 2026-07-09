@@ -13,7 +13,7 @@ namespace Telemetria.Hardware.PowerModules.SendPackages.Sinexcel
         public const byte NoError = 0xF0;
         public const int VoltageCoef = 10;
         public const int CurrentCoef = 1024;
-        public const int ReferenceCurrent = 20;
+        public const float ReferenceCurrent = 133.3f;
 
         protected SPackSinexcelBase(byte group, byte subAddress, ushort messageId, byte messageType = 0x03)
         {
