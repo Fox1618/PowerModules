@@ -15,11 +15,17 @@ namespace Telemetria.Hardware.PowerModules
         {
             Bind<IParserOuterPackPmModules>().To<ParserOuterPackPmModules>().WhenInjectedExactlyInto(typeof(ParserTonheRPackage<IRPackPmModulesBase>));
             Bind<IParserOuterPackPmModules>().To<ParserOuterPackPmModules>().WhenInjectedExactlyInto(typeof(ParserUugreenRPackage<IRPackPmModulesBase>));
+            Bind<IParserOuterPackPmModules>().To<ParserOuterPackPmModules>().WhenInjectedExactlyInto(typeof(ParserMegmeetRPackage<IRPackPmModulesBase>));
+            Bind<IParserOuterPackPmModules>().To<ParserOuterPackPmModules>().WhenInjectedExactlyInto(typeof(ParserSinexcelRPackage<IRPackPmModulesBase>));
             Bind<IParserPmModulesRPackage<IRPackPmModulesBase>>().To<ParserTonheRPackage<IRPackPmModulesBase>>().WhenInjectedExactlyInto(typeof(TonhePmSender<IRPackPmModulesBase>)).InSingletonScope();
             Bind<IParserPmModulesRPackage<IRPackPmModulesBase>>().To<ParserUugreenRPackage<IRPackPmModulesBase>>().WhenInjectedExactlyInto(typeof(UugreenPmSender<IRPackPmModulesBase>)).InSingletonScope();
-            Bind<IDeviceSending>().ToMethod(x => x.Kernel.Get<TcpDevice>()).WhenInjectedExactlyInto(typeof(TonhePmSender<IRPackPmModulesBase>), typeof(UugreenPmSender<IRPackPmModulesBase>));
+            Bind<IParserPmModulesRPackage<IRPackPmModulesBase>>().To<ParserMegmeetRPackage<IRPackPmModulesBase>>().WhenInjectedExactlyInto(typeof(MegmeetPmSender<IRPackPmModulesBase>)).InSingletonScope();
+            Bind<IParserPmModulesRPackage<IRPackPmModulesBase>>().To<ParserSinexcelRPackage<IRPackPmModulesBase>>().WhenInjectedExactlyInto(typeof(SinexcelPmSender<IRPackPmModulesBase>)).InSingletonScope();
+            Bind<IDeviceSending>().ToMethod(x => x.Kernel.Get<TcpDevice>()).WhenInjectedExactlyInto(typeof(TonhePmSender<IRPackPmModulesBase>), typeof(UugreenPmSender<IRPackPmModulesBase>), typeof(MegmeetPmSender<IRPackPmModulesBase>), typeof(SinexcelPmSender<IRPackPmModulesBase>));
             Bind<UugreenPmSender<IRPackPmModulesBase>>().ToSelf();
             Bind<TonhePmSender<IRPackPmModulesBase>>().ToSelf();
+            Bind<MegmeetPmSender<IRPackPmModulesBase>>().ToSelf();
+            Bind<SinexcelPmSender<IRPackPmModulesBase>>().ToSelf();
         }
     }
 }

@@ -33,3 +33,12 @@ X:\Dev\Students\Charger\PowerModules\bin\Debug\System.Runtime.WindowsRuntime.xml
 X:\Dev\Students\Charger\PowerModules\obj\Debug\Hardware.B4B8065A.Up2Date
 X:\Dev\Students\Charger\PowerModules\obj\Debug\Telemetria.Hardware.PowerModules.dll
 X:\Dev\Students\Charger\PowerModules\obj\Debug\Telemetria.Hardware.PowerModules.pdb
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\bin\Debug\Telemetria.Hardware.PowerModules.dll
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\bin\Debug\Telemetria.Hardware.PowerModules.pdb
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\bin\Debug\Ninject.dll
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\bin\Debug\Ninject.xml
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\obj\Debug\Hardware.PowerModules.csproj.AssemblyReference.cache
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\obj\Debug\Hardware.PowerModules.csproj.CoreCompileInputs.cache
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\obj\Debug\Hardware.B4B8065A.Up2Date
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\obj\Debug\Telemetria.Hardware.PowerModules.dll
+C:\Users\Mi\source\repos\ChargerPowerModules\PowerModules\obj\Debug\Telemetria.Hardware.PowerModules.pdb

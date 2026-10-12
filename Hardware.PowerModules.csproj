@@ -36,8 +36,8 @@
     <Reference Include="Hardware.DeviceSending">
       <HintPath>..\ChargerPowerModules\ddls\Hardware.DeviceSending.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\ChargerPowerModules\packages\Ninject.3.3.6\lib\net45\Ninject.dll</HintPath>
+    <Reference Include="Ninject, Version=3.3.6.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.6\lib\net45\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="ProgrammingWeapons">
       <HintPath>..\ChargerPowerModules\ddls\ProgrammingWeapons.dll</HintPath>
@@ -68,6 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CommandCodesUugreen.cs" />
+    <Compile Include="Common\CommandCodesMegmeet.cs" />
+    <Compile Include="Common\CommandCodesSinexcel.cs" />
     <Compile Include="Common\PackInterfaces.cs" />
     <Compile Include="Common\PmInfo.cs" />
     <Compile Include="Common\StateAttribute.cs" />
@@ -75,12 +77,22 @@
     <Compile Include="Interfaces\IParserPmModulesRPackages.cs" />
     <Compile Include="Interfaces\IPmSender.cs" />
     <Compile Include="Interfaces\IPowerModuleCommon.cs" />
+    <Compile Include="ParsersRPack\ParserSinexcelRPackage.cs" />
     <Compile Include="ParsersRPack\ParserOuterPackPmModules.cs" />
     <Compile Include="ParsersRPack\ParserUugreenRPackage.cs" />
     <Compile Include="ParsersRPack\ParserTonheRPackage.cs" />
+    <Compile Include="ParsersRPack\ParserMegmeetRPackage.cs" />
     <Compile Include="ParsersRPack\ParserPmModulesBase.cs" />
     <Compile Include="PowerModulesNinjectModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelBase.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelPowerControl.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelSetCurrent.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelReadStatus.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelReadCurrent.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelReadVoltage.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelSetMode.cs" />
+    <Compile Include="ReceivePackages\Sinexcel\RPackSinexcelSetVoltage.cs" />
     <Compile Include="ReceivePackages\Tonhe\RPackTonheConfirmStartStop.cs" />
     <Compile Include="ReceivePackages\Tonhe\RPackTonheAcInfo.cs" />
     <Compile Include="ReceivePackages\Tonhe\RPackTonheModuleState.cs" />
@@ -102,11 +114,38 @@
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenReadOutputVoltage.cs" />
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetCurrentLimit.cs" />
     <Compile Include="ReceivePackages\Uugreen\RPackUugreenSetOutputVoltageRef.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetBase.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetPowerControl.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetReadCurrent.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetReadStatus.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetReadVoltage.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetSetCurrent.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetSetMode.cs" />
+    <Compile Include="ReceivePackages\Megmeet\RPackMegmeetSetVoltage.cs" />
     <Compile Include="Senders\UugreenPmSender.cs" />
     <Compile Include="Senders\PmTonheSender.cs" />
+    <Compile Include="Senders\MegmeetPmSender.cs" />
+    <Compile Include="Senders\SinexcelPmSender.cs" />
     <Compile Include="ReceivePackages\RPackPmModulesBase.cs" />
+    <Compile Include="SendPackages\Sinexcel\SPackSinexcelReadStatus.cs" />
     <Compile Include="SendPackages\SPackPModulesBase.cs" />
     <Compile Include="SendPackages\SPackPmModulesOuterUsr.cs" />
+    <Compile Include="SendPackages\Megmeet\MegmeetMode.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetBase.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetPowerControl.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetReadCurrent.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetReadStatus.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetReadVoltage.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetSetCurrent.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetSetMode.cs" />
+    <Compile Include="SendPackages\Megmeet\SPackMegmeetSetVoltage.cs" />
+    <Compile Include="SendPackages\Sinexcel\SinexcelMode.cs" />
+    <Compile Include="SendPackages\Sinexcel\SPackSinexcelBase.cs" />
+    <Compile Include="SendPackages\Sinexcel\SPackSinexcelPowerControl.cs" />
+    <Compile Include="SendPackages\Sinexcel\SPackSinexcelSetMode.cs" />
+    <Compile Include="SendPackages\Sinexcel\SPackSinexcelSetVoltage.cs" />
+    <Compile Include="SendPackages\Sinexcel\SPackSinexcelSetCurrent.cs" />
+    <Compile Include="SendPackages\Sinexcel\SPackSinexcelQueryComprehensive.cs" />
     <Compile Include="SendPackages\Tonhe\Constants.cs" />
     <Compile Include="SendPackages\Tonhe\SPackTonheBase.cs" />
     <Compile Include="SendPackages\Tonhe\SPackTonheParamSetting.cs" />
